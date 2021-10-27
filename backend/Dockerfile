@@ -9,7 +9,8 @@ RUN npm install
 
 COPY ./backend ./
 
-RUN npm run build
+CMD [ "npm" ]
+# RUN npm run start:dev
 
 #FROM node:12.13-alpine as production
 
