@@ -9,3 +9,12 @@ services:
     tty: true
     ports:
       - "3500:3030"
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: ./frontend/Dockerfile
+    command: npm run dev
+    tty: true
+    ports:
+      - "3600:3000"
