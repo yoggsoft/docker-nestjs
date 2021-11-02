@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@material-ui/core/CssBaseline'
+import Head from 'next/head'
 import Header from '../modules/Header';
 import Footer from '../modules/Footer';
 import Container from '@mui/material/Container';
@@ -22,8 +23,16 @@ const HeaderFooterLayout = ({ children, hideFooter, hideHeader }: IHeaderFooterL
 		<>
 			<ThemeProvider theme={qoverTheme}>
 				<CssBaseline />
+				<Head>
+					<title>Qover Test</title>
+					<link rel="icon" href="/favicon.png" />
+				</Head>
 				{!hideHeader && <Header />}
-				<Container sx={{ flex: 1, height: '100vh', display: 'flex' }} maxWidth={false}>
+				<Container
+					sx={{ flex: 1, height: '100vh', display: 'flex' }}
+					maxWidth={false}
+					component='main'
+				>
 				{children}
 				</Container>
 				{!hideFooter && <Footer />}

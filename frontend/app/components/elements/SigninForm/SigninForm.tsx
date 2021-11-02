@@ -122,37 +122,23 @@ export default function SigninForm () {
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLInputElement | HTMLFormElement>) => {
-    
     event.preventDefault();
     dispatch({ type: 'SUBMIT', state });
     try {
-      const { user: { email, password } } = state;
+      const { user } = state;
       axios.post('/api/authenticate/signin', {
-        email,
-        password
+        ...user
       }).then(
         res => {
-          console.log(state);
-          console.log(res.data);
-          dispatch({ type: 'SUCCESS', ...res.data });
+          console.log('api success', res.data);
+          dispatch({ type: 'SUCCESS', state: { ...res.data } });
+          // window.location=res.data.redirect;
         }
       ).catch(
         (err) => {
-          console.log(err);
           dispatch({ type: 'ERROR', state });
         }
       );
-
-      // const data = await response.body;
-      // console.log(response);
-
-      // if (response.ok) {
-      //   dispatch({ type: 'SUCCESS', state });
-      // }
-      // if (response.body.error) {
-
-      //   dispatch({ type: 'ERROR', state });
-      // }
     } catch (err) {
       return dispatch({ type: 'ERROR', state });
     }

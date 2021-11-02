@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Docker Nest')
-    .setDescription('Docker running NestJS REST API')
+    .setTitle('Docker NestJS Application')
+    .setDescription('Docker running NestJS')
     .setVersion('1.0.0')
     .build();
 

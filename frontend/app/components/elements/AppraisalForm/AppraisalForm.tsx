@@ -1,13 +1,16 @@
-import React, { useReducer } from 'react';
+import React, { ReactNode, useReducer } from 'react';
 import {
   Button,
   FormControl,
-  TextField,
-  CircularProgress
+  CircularProgress,
+  ListItem,
+  Grid
 } from '@mui/material';
+import { KeyboardArrowDown } from '@mui/icons-material';
 import { makeStyles } from "@mui/styles";
+import AppraisalTextfield from './AppraisalTextField';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   textfield: {
     marginBottom: 20
   },
@@ -16,18 +19,23 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'inherit',
     fontWeight: 600,
     minHeight: 48,
-    marginTop: 20
-  },
-  link: {
-    fontWeight: 500,
-    textDecoration: 'none',
+    marginTop: 20,
     '&:hover': {
-      textDecoration: 'underline'
+      backgroundColor: '#31cfdaee',
     }
+  },
+  euro: {
+    height: 40,
+    display: 'inline-flex',
+    alignItems: 'center',
+    fontSize: 15,
+    marginLeft: 10,
+    color: '#484848'
   }
-}));
+});
 
 function appraisalReducer (state: any, action: any) {
+  console.log({ state, action });
   switch (action.type) {
     case 'CHANGE':
       return {
@@ -86,103 +94,120 @@ export default function AppraisalForm () {
   const [state, dispatch] = useReducer(appraisalReducer, {
     loading: false,
     appraisal: {
-      driverAge: 0,
+      driverAge: '',
       car: '',
-      purchasePrice: 0
+      purchasePrice: ''
     },
     error: {
       driverAge: '',
       car: '',
-      purchasePrice: ''
+      purchasePrice: '',
+      global: ''
     }
   });
 
   const handleSubmit = async (event: React.FormEvent<HTMLInputElement | HTMLFormElement>) => {
     event.preventDefault();
     dispatch({ type: 'SUBMIT', state });
-    try {
-      const { email, password } = state;
-      console.log('SUBMIT', email, password)
-      const response = await fetch('/api/authenticate/signin', {
-        method: 'POST',
-        body: JSON.stringify({ email, password })
-      });
-      dispatch({ type: 'SUCCESS', state });
-    } catch (err) {
-      return dispatch({ type: 'ERROR', state });
-    }
+    // try {
+    //   const { email, password } = state;
+    //   console.log('SUBMIT', email, password)
+    //   const response = await fetch('/api/authenticate/signin', {
+    //     method: 'POST',
+    //     body: JSON.stringify({ email, password })
+    //   });
+    //   dispatch({ type: 'SUCCESS', state });
+    // } catch (err) {
+    //   return dispatch({ type: 'ERROR', state });
+    // }
   }
 
   function handleChange (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) {
-    return dispatch({ type: 'CHANGE', value: event.target.value, field });
+    return dispatch({
+      type: 'CHANGE',
+      field: event.target.name,
+      payload: event.target.value
+    });
   }
 
   const handleFocus = (field: string) => {
-    return dispatch({ type: 'FOCUS', field });
+    return dispatch({
+      type: 'FOCUS',
+      field
+    });
   }
+
   return (
-    <FormControl
-      component='form'
-      onSubmit={handleSubmit}
-      autoComplete='off'
-    >
-      <TextField
-        autoFocus
-        id='driverAge'
-        type='text'
-        value={state.appraisal.driverAge}
-        error={!!state.error.driverAge}
-        disabled={state.loading}
-        placeholder='31'
-        variant='outlined'
-        className={classes.textfield}
-        onChange={e => handleChange(e, 'driverAge')}
-        onFocus={() => handleFocus('driverAge')}
-        InputLabelProps={{
-          shrink: true
-        }}
-      />
-      <TextField
+    <Grid item xs={7} sx={{ margin: '0 auto' }}>
+      <FormControl component='form' onSubmit={handleSubmit} autoComplete='off' fullWidth>
+        <AppraisalTextfield
+          label='Age of the driver'
+          autoFocus
+          sx={{ width: 80 }}
+          id='driverAge'
+          value={state.appraisal.driverAge}
+          error={!!state.error.driverAge}
+          disabled={state.loading}
+          placeholder='31'
+          size='small'
+          onChange={e => handleChange(e, 'driverAge')}
+          onFocus={() => handleFocus('driverAge')}
+        />
+        <AppraisalTextfield
+          label='Car'
+          autoFocus
+          fullWidth
           id='car'
           select
-          value={state.appraisal.car}
-          className={classes.textfield}
-          // onChange={handleChange}
+          value={vehicles[0].value}
+          error={!!state.error.driverAge}
+          disabled={state.loading}
+          placeholder='31'
+          onChange={e => handleChange(e, 'driverAge')}
+          onFocus={() => handleFocus('driverAge')}
           SelectProps={{
-            native: true
+            native: false,
+            IconComponent: CustomChevron
           }}
-          variant='outlined'
         >
-        {vehicles.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </TextField>
-      <TextField
-        id='purchasePrice'
-        type='text'
-        value={state.appraisal.purchasePrice}
-        error={!!state.error.purchasePrice}
-        disabled={state.loading}
-        placeholder=''
-        variant='outlined'
-        className={classes.textfield}
-        onChange={e => handleChange(e, 'purchasePrice')}
-        onFocus={() => handleFocus('purchasePrice')}
-        InputLabelProps={{
-          shrink: true
-        }}
-      />
-      <Button
-        disabled={state.loading}
-        variant='contained'
-        className={classes.cta}
-        type='submit'
-        startIcon={state.loading && <CircularProgress size={20} color='inherit' />}
-      >
-        Get a price
-      </Button>
-    </FormControl>
+          {vehicles.map((option) => (
+            <ListItem key={option.value} value={option.value}>
+              {option.label}
+            </ListItem>
+          ))}
+        </AppraisalTextfield>
+        <AppraisalTextfield
+          label='Purchase Price'
+          autoFocus
+          sx={{ width: 80 }}
+          placeholder=''
+          id='purchasePrice'
+          type='text'
+          value={state.appraisal.purchasePrice}
+          error={!!state.error.purchasePrice}
+          disabled={state.loading}
+          onChange={e => handleChange(e, 'purchasePrice')}
+          onFocus={() => handleFocus('purchasePrice')}
+          endAdornment={<span className={classes.euro}>{'€'}</span>}
+        />
+        <Grid container alignItems='center' className={classes.textfield}>
+          <Grid item xs={4}>
+          </Grid>
+          <Grid item xs={8}>
+            <Button
+              disabled={state.loading}
+              variant='contained'
+              className={classes.cta}
+              type='submit'
+              startIcon={state.loading && <CircularProgress size={20} color='inherit' />}
+            >
+              Get a price
+            </Button>
+          </Grid>
+        </Grid>
+      </FormControl>
+    </Grid>
   );
 }
+
+const CustomChevron = () => <KeyboardArrowDown sx={{ fill: '#31cfda' }} />;

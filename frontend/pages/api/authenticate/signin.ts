@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
+  valid: boolean,
   redirect: string,
   user: {
     email: string,
@@ -18,17 +19,35 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-    if (req.method === 'POST') {
-      // Process a POST request
+  console.log('cucateta');
+  if (req.method === 'POST') {
+      let result:Data = {
+        valid: false,
+        user: {
+          email: '',
+          password: ''
+        },
+        error: {
+          email: '',
+          password: ''
+        },
+        redirect: ''
+      };
       try {
-        let valid = false;
-        let result:Data = {user: { email: '', password: '' }, error: { email: '', password: '' }, redirect: ''};
-        const { email, password } = req.query;
+        const { user: { email, password } } = req.body;
+
         if (email === 'Qover') {
-          valid = true;
+          result = {
+            ...result,
+            valid: true
+          };
         } else {
           result = {
             ...result,
+            user: {
+              email: email,
+              password: password
+            },
             error: {
               ...result.error,
               email: 'invalid username'
@@ -37,21 +56,40 @@ export default function handler(
         }
   
         if (password === 'ninja') {
-          valid = true;
+          result = {
+            ...result,
+            valid: true
+          };
         } else {
           result = {
             ...result,
+            user: {
+              email: email,
+              password: password
+            },
             error: {
               ...result.error,
               password: 'invalid password'
             }
           }
         }
-        res.status(200).json(result)
+
+        console.log('before response', result)
+        if (result.valid) {
+          console.log('si');
+          result = {
+            ...result,
+            redirect: '/appraisal'
+          };
+          res.status(200).json({ ...result });
+        } else {
+          console.log('no');
+          res.status(200).json({ ...result });
+        }
       } catch (err) {
-        // log to external monitoring
+        res.status(401).send({ ...result })
       }
     } else {
-      res.status(401).send({} as any)
+      res.status(404).send({} as any)
     }
 }
