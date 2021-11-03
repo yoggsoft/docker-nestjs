@@ -16,7 +16,12 @@ import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   textfield: {
-    marginBottom: 20
+    marginBottom: 30,
+    '& .MuiFormHelperText-root': {
+      position: 'absolute',
+      marginBottom: -20,
+      bottom: 0
+    }
   },
   cta: {
     backgroundColor: '#317bda',
@@ -83,12 +88,11 @@ function signupReducer (state: any, action: any) {
         }
       };
     case 'REMEMBER':
-      console.log(state.user.remember);
       return {
         ...state,
         user: {
           ...state.user,
-          remember: state.user.remember
+          remember: !state.user.remember
         }
       };
     case 'ERROR':
@@ -96,7 +100,8 @@ function signupReducer (state: any, action: any) {
         ...state,
         loading: false,
         error: {
-          ...state.error
+          ...state.error,
+          ...action.payload.error
         }
       };
     default:
@@ -123,16 +128,18 @@ export default function SigninForm () {
 
   const handleSubmit = (event: React.FormEvent<HTMLInputElement | HTMLFormElement>) => {
     event.preventDefault();
-    dispatch({ type: 'SUBMIT', state });
+    dispatch({ type: 'SUBMIT' });
     try {
-      const { user } = state;
       axios.post('/api/authenticate/signin', {
-        ...user
+        ...state
       }).then(
         res => {
-          console.log('api success', res.data);
-          dispatch({ type: 'SUCCESS', state: { ...res.data } });
-          // window.location=res.data.redirect;
+          if (res.data.valid) {
+            dispatch({ type: 'SUCCESS', payload: res.data });
+            window.location.href = res.data.redirect;
+          } else {
+            dispatch({ type: 'ERROR', payload: res.data });
+          }
         }
       ).catch(
         (err) => {
@@ -164,10 +171,11 @@ export default function SigninForm () {
         required
         id='email'
         label='Email'
-        type='text' // should be email
+        type='text' // should be 'email'
         value={state.user.email}
         error={!!state.error.email}
         disabled={state.loading}
+        helperText={state.error.email}
         placeholder=''
         fullWidth
         variant='standard'
@@ -185,6 +193,7 @@ export default function SigninForm () {
         type='password'
         value={state.user.password}
         error={!!state.error.password}
+        helperText={state.error.password}
         disabled={state.loading}
         placeholder=''
         fullWidth
@@ -204,7 +213,7 @@ export default function SigninForm () {
             <Checkbox
               disabled={state.loading}
               checked={!!state.user.remember}
-              onChange={() => dispatch({ type: 'REMEMBER' })}
+              onChange={() => dispatch({ type: 'REMEMBER'  })}
               color='primary'
             />
           }

@@ -19,7 +19,6 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  console.log('cucateta');
   if (req.method === 'POST') {
       let result:Data = {
         valid: false,
@@ -35,7 +34,6 @@ export default function handler(
       };
       try {
         const { user: { email, password } } = req.body;
-
         if (email === 'Qover') {
           result = {
             ...result,
@@ -74,16 +72,13 @@ export default function handler(
           }
         }
 
-        console.log('before response', result)
         if (result.valid) {
-          console.log('si');
           result = {
             ...result,
             redirect: '/appraisal'
           };
           res.status(200).json({ ...result });
         } else {
-          console.log('no');
           res.status(200).json({ ...result });
         }
       } catch (err) {

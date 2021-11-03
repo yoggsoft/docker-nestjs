@@ -8,7 +8,15 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(theme => ({
   textfield: {
-    marginBottom: 20
+    marginBottom: 30,
+    '& .MuiFormHelperText-root': {
+      position: 'absolute',
+      fontWeight: 500,
+      fontSize: 15,
+      marginBottom: -20,
+      bottom: 0,
+      marginLeft: 0
+    }
   },
 	inputLabel: {
     color: '#484848'

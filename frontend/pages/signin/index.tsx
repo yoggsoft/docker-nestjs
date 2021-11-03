@@ -61,7 +61,7 @@ const SigninPage: NextPage = () => {
 			<Grid container justifyContent='center' alignContent='center' sx={{ display: 'flex' }}>
 				<Grid item sm={6} justifyContent='center' className={classes.content}>
 					<Grid item className={classes.logoContainer}>
-						<Image src='/img/white.svg' layout='fixed' width='86.1' height='100' />
+						<Image src='/img/white.svg' layout='fixed' width='86.1' height='100' alt='qover' />
 					</Grid>
 					<Paper className={classes.dialog}>
 						<SigninForm />

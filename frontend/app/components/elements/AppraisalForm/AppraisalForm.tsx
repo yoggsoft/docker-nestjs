@@ -1,20 +1,23 @@
-import React, { ReactNode, useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   Button,
   FormControl,
   CircularProgress,
-  ListItem,
+  MenuItem,
   Grid
 } from '@mui/material';
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { makeStyles } from "@mui/styles";
 import AppraisalTextfield from './AppraisalTextField';
+import { isValidAge, isNumber } from '../../../utils/utils';
+import axios from 'axios';
 
 const useStyles = makeStyles({
   textfield: {
     marginBottom: 20
   },
   cta: {
+    minWidth: 160,
     backgroundColor: '#31cfda',
     textTransform: 'inherit',
     fontWeight: 600,
@@ -35,13 +38,12 @@ const useStyles = makeStyles({
 });
 
 function appraisalReducer (state: any, action: any) {
-  console.log({ state, action });
   switch (action.type) {
     case 'CHANGE':
       return {
         ...state,
-        user: {
-          ...state.user,
+        appraisal: {
+          ...state.appraisal,
           [action.field]: action.value
         }
       };
@@ -56,17 +58,15 @@ function appraisalReducer (state: any, action: any) {
     case 'SUBMIT':
       return {
         ...state,
-        loading: true,
-        user: {
-          ...state.user
-        }
+        loading: true
       };
     case 'ERROR':
       return {
         ...state,
         loading: false,
         error: {
-          ...state.error
+          ...state.error,
+          ...action.payload.error
         }
       };
     default:
@@ -106,32 +106,51 @@ export default function AppraisalForm () {
     }
   });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLInputElement | HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLInputElement | HTMLFormElement>) => {
     event.preventDefault();
-    dispatch({ type: 'SUBMIT', state });
-    // try {
-    //   const { email, password } = state;
-    //   console.log('SUBMIT', email, password)
-    //   const response = await fetch('/api/authenticate/signin', {
-    //     method: 'POST',
-    //     body: JSON.stringify({ email, password })
-    //   });
-    //   dispatch({ type: 'SUCCESS', state });
-    // } catch (err) {
-    //   return dispatch({ type: 'ERROR', state });
-    // }
+    dispatch({ type: 'SUBMIT' });
+    console.log('submit');
+    try {
+      axios.post('/api/appraisal/quote', {
+        ...state
+      }).then(
+        res => {
+          console.log({res});
+          if (res.data.valid) {
+            dispatch({ type: 'SUCCESS', payload: res.data });
+            // window.location.href = res.data.redirect;
+          } else {
+            dispatch({ type: 'ERROR', payload: res.data });
+          }
+        }
+      ).catch(
+        (err) => {
+          dispatch({ type: 'ERROR', state });
+        }
+      );
+    } catch (err) {
+      return dispatch({ type: 'ERROR', state });
+    }
   }
 
-  function handleChange (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: string) {
-    return dispatch({
-      type: 'CHANGE',
-      field: event.target.name,
-      payload: event.target.value
-    });
+  const handleChangeDriverAge = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (isValidAge(event.target.value)) {
+      dispatch({ type: 'CHANGE', value: event.target.value, field: 'driverAge' });
+    }
+  }
+
+  const handleCarChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    dispatch({ type: 'CHANGE', value: event.target.value, field: 'car' });
+  }
+
+  const handleChangePurchasePrice = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (isNumber(event.target.value)) {
+      dispatch({ type: 'CHANGE', value: event.target.value, field: 'purchasePrice' });
+    }
   }
 
   const handleFocus = (field: string) => {
-    return dispatch({
+    dispatch({
       type: 'FOCUS',
       field
     });
@@ -142,51 +161,46 @@ export default function AppraisalForm () {
       <FormControl component='form' onSubmit={handleSubmit} autoComplete='off' fullWidth>
         <AppraisalTextfield
           label='Age of the driver'
-          autoFocus
           sx={{ width: 80 }}
           id='driverAge'
           value={state.appraisal.driverAge}
           error={!!state.error.driverAge}
           disabled={state.loading}
-          placeholder='31'
-          size='small'
-          onChange={e => handleChange(e, 'driverAge')}
+          onChange={handleChangeDriverAge}
           onFocus={() => handleFocus('driverAge')}
         />
         <AppraisalTextfield
           label='Car'
-          autoFocus
           fullWidth
           id='car'
           select
-          value={vehicles[0].value}
-          error={!!state.error.driverAge}
+          value={state.appraisal.car}
+          error={!!state.error.car}
+          helperText={state.error.car}
           disabled={state.loading}
-          placeholder='31'
-          onChange={e => handleChange(e, 'driverAge')}
-          onFocus={() => handleFocus('driverAge')}
+          onChange={e => handleCarChange(e)}
+          onFocus={() => handleFocus('car')}
           SelectProps={{
             native: false,
             IconComponent: CustomChevron
           }}
         >
           {vehicles.map((option) => (
-            <ListItem key={option.value} value={option.value}>
+            <MenuItem key={option.value} value={option.value}>
               {option.label}
-            </ListItem>
+            </MenuItem>
           ))}
         </AppraisalTextfield>
         <AppraisalTextfield
           label='Purchase Price'
-          autoFocus
           sx={{ width: 80 }}
           placeholder=''
           id='purchasePrice'
-          type='text'
-          value={state.appraisal.purchasePrice}
           error={!!state.error.purchasePrice}
+          helperText={state.error.purchasePrice}
+          value={state.appraisal.purchasePrice}
           disabled={state.loading}
-          onChange={e => handleChange(e, 'purchasePrice')}
+          onChange={handleChangePurchasePrice}
           onFocus={() => handleFocus('purchasePrice')}
           endAdornment={<span className={classes.euro}>{'€'}</span>}
         />
