@@ -15,6 +15,25 @@ type Data = {
   }
 }
 
+const signin_rules = {
+  email: {
+    is_empty: {
+      error_message: 'Username required'
+    },
+    incorrect: {
+      error_message: 'Invalid username'
+    }
+  },
+  password: {
+    is_empty: {
+      error_message: 'Password required'
+    },
+    incorrect: {
+      error_message: 'Invalid password'
+    }
+  },
+}
+
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -28,7 +47,6 @@ export default function handler(
     } = req.body;
 
     let result:Data = {
-      valid: false,
       ...req.body,
       error: {
         email: '',
@@ -37,55 +55,30 @@ export default function handler(
       redirect: ''
     };
 
-
     try {
-      if (email === 'Qover') {
-        result = {
-          ...result,
-          valid: true
-        };
-      } else {
-        result = {
-          ...result,
-          user: {
-            email: email,
-            password: password
-          },
-          error: {
-            ...result.error,
-            email: 'invalid username'
-          }
-        }
+      if (!email) {
+        result.error.email = signin_rules.email.is_empty.error_message;
+      } else if (email !== 'Qover') {
+        result.error.email = signin_rules.email.incorrect.error_message;
       }
 
-      if (password === 'ninja') {
-        result = {
-          ...result,
-          valid: true
-        };
-      } else {
-        result = {
-          ...result,
-          user: {
-            email: email,
-            password: password
-          },
-          error: {
-            ...result.error,
-            password: 'invalid password'
-          }
-        }
+      if (!password) {
+        result.error.password = signin_rules.password.is_empty.error_message;
+      } else if (password !== 'ninja') {
+        result.error.password = signin_rules.password.incorrect.error_message;
       }
 
-      if (result.valid) {
+      const hasErrors = Object.values(result.error).some(val => (val !== null && val !== ''));
+      
+      if (!hasErrors) {
         result = {
           ...result,
-          redirect: '/appraisal'
+          valid: true,
+          redirect: '/appraisal/create'
         };
-        res.status(200).json({ ...result });
-      } else {
-        res.status(200).json({ ...result });
       }
+      
+      res.status(200).json({ ...result });
     } catch (err) {
       res.status(401).send({ ...result })
     }

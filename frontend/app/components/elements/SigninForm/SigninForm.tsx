@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import MuiLink from '@mui/material/Link';
 import Link from 'next/link';
+import { useRouter } from 'next/router'
 import { makeStyles } from "@mui/styles";
 import axios from 'axios';
 
@@ -109,7 +110,8 @@ function signupReducer (state: any, action: any) {
   }
 }
 
-export default function SigninForm () {
+export default function SigninForm () {  
+  const router = useRouter();
   const classes = useStyles();
   const [state, dispatch] = useReducer(signupReducer, {
     loading: false,
@@ -136,7 +138,7 @@ export default function SigninForm () {
         res => {
           if (res.data.valid) {
             dispatch({ type: 'SUCCESS', payload: res.data });
-            window.location.href = res.data.redirect;
+            router.push(res.data.redirect);
           } else {
             dispatch({ type: 'ERROR', payload: res.data });
           }
@@ -168,7 +170,6 @@ export default function SigninForm () {
       <Typography className={classes.greeting}>Welcome at Qover</Typography>
       <TextField
         autoFocus
-        required
         id='email'
         label='Email'
         type='text' // should be 'email'
@@ -189,7 +190,6 @@ export default function SigninForm () {
       <TextField
         id='password'
         label='Password'
-        required
         type='password'
         value={state.user.password}
         error={!!state.error.password}

@@ -109,7 +109,7 @@ export default function AppraisalForm () {
         ...state
       }).then(
         res => {
-          if (res.data.approve) {
+          if (res.data.valid) {
             dispatch({ type: 'SUCCESS', payload: res.data });
             window.location.href = res.data.redirect;
           } else {

@@ -1,6 +1,13 @@
 version: '2'
 
 services:
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGODB_DATABASE="qoverdb"
+    ports:
+      - 27017:27017
+
   backend:
     build:
       context: ./
@@ -9,12 +16,40 @@ services:
     tty: true
     ports:
       - "3500:3030"
+    depends_on:
+      - mongodb
 
-  frontend:
-    build:
-      context: ./
-      dockerfile: ./frontend/Dockerfile
-    command: npm run dev
-    tty: true
-    ports:
-      - "3600:3000"
+#   frontend:
+#     build:
+#       context: ./
+#       dockerfile: ./frontend/Dockerfile
+#     command: npm run dev
+#     tty: true
+#     ports:
+#       - "3600:3000"
+
+# version: "3"
+# services:
+#   back_app:
+#     depends_on:
+#       - db
+#     restart: always
+#     build: .
+#     ports:
+#       - "8080:3000"
+#     environment:
+#       - DB_URL=mongodb://db_mongo
+#     volumes:
+#       - .:/usr/src/app
+#       - /usr/src/app/node_modules
+      
+#   db:
+#     image: mongo
+#     container_name: db_mongo
+#     volumes:
+#       - mongodata:/data/db
+#     ports:
+#       - "27017:27017"
+
+# volumes:
+#   mongodata: 

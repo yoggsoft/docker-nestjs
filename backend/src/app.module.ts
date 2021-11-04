@@ -9,7 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     AppraisalModule,
     UserModule,
-    MongooseModule.forRoot('mongodb://localhost/nest')
+    MongooseModule.forRoot('mongodb://localhost/qoverdb')
   ],
   controllers: [AppController],
   providers: [AppService],
