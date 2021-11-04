@@ -1,3 +1,4 @@
+
 import type { NextPage } from 'next';
 import HeaderFooterLayout from '../../app/components/layouts/HeaderFooterLayout';
 import {
@@ -7,7 +8,7 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { makeStyles } from '@mui/styles';
-import SigninForm from '../../app/components/elements/SigninForm/SigninForm';
+import AppraisalForm from '../../app/components/elements/AppraisalForm/AppraisalForm';
 
 const useStyles = makeStyles({
 	dialog: {
@@ -48,31 +49,22 @@ const useStyles = makeStyles({
 	logoContainer: {
 		textAlign: 'center',
 		marginBottom: 30
-	},
-	content: {
-		maxWidth: 350
 	}
 })
 
-const SigninPage: NextPage = () => {
+const Offer: NextPage = () => {
 	const classes = useStyles();
 	return (
-		<HeaderFooterLayout>
+		<HeaderFooterLayout hideFooter hideHeader>
 			<Grid container justifyContent='center' alignContent='center' sx={{ display: 'flex' }}>
-				<Grid item sm={6} justifyContent='center' className={classes.content}>
-					<Grid item className={classes.logoContainer}>
-						<Image src='/img/white.svg' layout='fixed' width='86.1' height='100' alt='qover' />
-					</Grid>
+				<Grid item sm={10} justifyContent='center'>
 					<Paper className={classes.dialog}>
-						<SigninForm />
+						<AppraisalForm />
 					</Paper>
-					<Grid item className={classes.access}>
-						{`Don't have an account?`} &nbsp; <Link href='/' className={classes.link}>Ask access</Link>
-					</Grid>
 				</Grid>
 			</Grid>
 		</HeaderFooterLayout>
 	);
 }
 
-export default SigninPage
+export default Offer

@@ -2,10 +2,8 @@ import type { NextPage } from 'next';
 import HeaderFooterLayout from '../../app/components/layouts/HeaderFooterLayout';
 import {
 	Grid,
-	Paper,
-	Link
+	Paper
 } from '@mui/material';
-import Image from 'next/image';
 import { makeStyles } from '@mui/styles';
 import AppraisalForm from '../../app/components/elements/AppraisalForm/AppraisalForm';
 
@@ -51,7 +49,7 @@ const useStyles = makeStyles({
 	}
 })
 
-const Appraisal: NextPage = () => {
+const Create: NextPage = () => {
 	const classes = useStyles();
 	return (
 		<HeaderFooterLayout hideFooter hideHeader>
@@ -66,4 +64,4 @@ const Appraisal: NextPage = () => {
 	);
 }
 
-export default Appraisal
+export default Create

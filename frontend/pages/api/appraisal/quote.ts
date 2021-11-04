@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
@@ -43,75 +42,40 @@ export default function handler(
     };
 
     try {
-      if (!car) {
-        result = {
-          ...result,
-          approve: false,
-          error: {
-            ...result.error,
-            car: 'Car must be provided'
+      if (driverAge) {
+        if (parseInt(driverAge) > 18) {
+          if (car) {
+            if (car === 'porsche' && parseInt(driverAge) > 24) {
+              if (purchasePrice) {
+                if (parseInt(purchasePrice) > 5000) {
+                  result = {
+                    ...result,
+                    approve: true
+                  };
+                } else {
+                  result.error.purchasePrice = 'Sorry! The price of the car is too low';
+                }
+              } else {
+                result.error.purchasePrice = 'Purchase price must be provided';
+              }
+            } else {
+              result = {
+                ...result,
+                error: {
+                  ...result.error,
+                  driverAge: 'Sorry! We can not accept this particular risk',
+                  car: 'Sorry! We can not accept this particular risk'
+                }
+              }
+            }
+          } else {
+            result.error.car = 'Car must be provided';
           }
-        }
-      }
-
-      if (!purchasePrice) {
-        result = {
-          ...result,
-          approve: false,
-          error: {
-            ...result.error,
-            purchasePrice: 'Purchase price must be provided'
-          }
-        }
-      } else if (parseInt(purchasePrice) >= 5000) {
-        result = {
-          ...result,
-          approve: true
-        };
-      } else {
-        result = {
-          ...result,
-          approve: false,
-          error: {
-            ...result.error,
-            purchasePrice: 'Sorry! The price of the car is too low'
-          }
-        }
-      }
-
-      if (!driverAge) {
-        result = {
-          ...result,
-          approve: false,
-          error: {
-            ...result.error,
-            driverAge: 'Age of the driver must be provided'
-          }
-        }
-      } else if (parseInt(driverAge) < 18) {
-        result = {
-          ...result,
-          approve: false,
-          error: {
-            ...result.error,
-            driverAge: 'Sorry! The driver is too young'
-          }
-        }
-      } else if (parseInt(driverAge) < 25  && car === 'porsche') {
-        result = {
-          ...result,
-          approve: false,
-          error: {
-            ...result.error,
-            driverAge: 'Sorry! We can not accept this particular risk',
-            car: 'Sorry! We can not accept this particular risk'
-          }
+        } else {
+          result.error.driverAge = 'Sorry! The driver is too young';
         }
       } else {
-        result = {
-          ...result,
-          approve: true
-        };
+        result.error.driverAge = 'Age of driver must be provided';
       }
 
       if (result.approve) {
