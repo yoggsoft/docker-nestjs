@@ -48,11 +48,6 @@ const useStyles = makeStyles({
 	logoContainer: {
 		textAlign: 'center',
 		marginBottom: 30
-	},
-	content: {
-		// display: 'flex'
-		// marginTop: 90,
-		// maxWidth: 350
 	}
 })
 
@@ -61,7 +56,7 @@ const Appraisal: NextPage = () => {
 	return (
 		<HeaderFooterLayout hideFooter hideHeader>
 			<Grid container justifyContent='center' alignContent='center' sx={{ display: 'flex' }}>
-				<Grid item sm={10} justifyContent='center' className={classes.content}>
+				<Grid item sm={10} justifyContent='center'>
 					<Paper className={classes.dialog}>
 						<AppraisalForm />
 					</Paper>

@@ -3,6 +3,7 @@ import {
   TextField,
   OutlinedTextFieldProps
 } from '@mui/material';
+import classnames from 'classnames';
 import { ReactNode } from 'react';
 import { makeStyles } from "@mui/styles";
 
@@ -13,14 +14,19 @@ const useStyles = makeStyles(theme => ({
       position: 'absolute',
       fontWeight: 500,
       fontSize: 15,
-      marginBottom: -20,
+      marginBottom: -25,
       bottom: 0,
-      marginLeft: 0
+      marginLeft: 0,
+      minWidth: 320
     }
   },
 	inputLabel: {
+    fontSize: 15,
     color: '#484848'
   },
+  error: {
+    color: '#ee3d57'
+  }
 }));
 
 interface TAppraisalTextfieldProps extends Omit<OutlinedTextFieldProps, 'variant'> {
@@ -36,7 +42,16 @@ export default function AppraisalTextfield ({
 }: TAppraisalTextfieldProps) {
   const classes = useStyles();
   return (
-    <Grid container alignItems='center' className={classes.textfield}>
+    <Grid
+      container
+      alignItems='center'
+      className={classnames(
+        classes.textfield,
+        {
+          [classes.error]: others.error
+        }
+      )}
+    >
       <Grid item xs={4}>
         <label  className={classes.inputLabel} htmlFor={others.id}>
           {label}

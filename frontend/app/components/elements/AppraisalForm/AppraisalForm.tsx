@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 import {
   Button,
   FormControl,
@@ -13,16 +13,12 @@ import { isValidAge, isNumber } from '../../../utils/utils';
 import axios from 'axios';
 
 const useStyles = makeStyles({
-  textfield: {
-    marginBottom: 20
-  },
   cta: {
     minWidth: 160,
     backgroundColor: '#31cfda',
     textTransform: 'inherit',
     fontWeight: 600,
     minHeight: 48,
-    marginTop: 20,
     '&:hover': {
       backgroundColor: '#31cfdaee',
     }
@@ -32,8 +28,7 @@ const useStyles = makeStyles({
     display: 'inline-flex',
     alignItems: 'center',
     fontSize: 15,
-    marginLeft: 10,
-    color: '#484848'
+    marginLeft: 10
   }
 });
 
@@ -109,16 +104,14 @@ export default function AppraisalForm () {
   const handleSubmit = (event: React.FormEvent<HTMLInputElement | HTMLFormElement>) => {
     event.preventDefault();
     dispatch({ type: 'SUBMIT' });
-    console.log('submit');
     try {
       axios.post('/api/appraisal/quote', {
         ...state
       }).then(
         res => {
-          console.log({res});
-          if (res.data.valid) {
+          if (res.data.approve) {
             dispatch({ type: 'SUCCESS', payload: res.data });
-            // window.location.href = res.data.redirect;
+            window.location.href = res.data.redirect;
           } else {
             dispatch({ type: 'ERROR', payload: res.data });
           }
@@ -161,9 +154,10 @@ export default function AppraisalForm () {
       <FormControl component='form' onSubmit={handleSubmit} autoComplete='off' fullWidth>
         <AppraisalTextfield
           label='Age of the driver'
-          sx={{ width: 80 }}
+          sx={{ width: 100 }}
           id='driverAge'
           value={state.appraisal.driverAge}
+          helperText={state.error.driverAge}
           error={!!state.error.driverAge}
           disabled={state.loading}
           onChange={handleChangeDriverAge}
@@ -193,7 +187,7 @@ export default function AppraisalForm () {
         </AppraisalTextfield>
         <AppraisalTextfield
           label='Purchase Price'
-          sx={{ width: 80 }}
+          sx={{ width: 100 }}
           placeholder=''
           id='purchasePrice'
           error={!!state.error.purchasePrice}
@@ -204,7 +198,7 @@ export default function AppraisalForm () {
           onFocus={() => handleFocus('purchasePrice')}
           endAdornment={<span className={classes.euro}>{'€'}</span>}
         />
-        <Grid container alignItems='center' className={classes.textfield}>
+        <Grid container alignItems='center'>
           <Grid item xs={4}>
           </Grid>
           <Grid item xs={8}>
