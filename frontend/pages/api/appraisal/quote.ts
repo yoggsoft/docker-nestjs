@@ -16,6 +16,40 @@ type Data = {
   redirect: string
 };
 
+const appraisal_rules = {
+  driver: {
+    is_empty: {
+      message: 'Age of driver must be provided'
+    },
+    minimum_age: {
+      value: 18,
+      message: 'Sorry! The driver is too young'  
+    }
+  },
+  car: {
+    is_empty: {
+      message: 'Car must be provided'
+    },
+    model: {
+      porsche: {
+        minimum_driver_age: {
+          value: 25,
+          message: 'Sorry! We can not accept this particular risk'
+        }
+      }
+    },
+  },
+  purchase_price: {
+    is_empty: {
+      message: 'Purchase price must be provided'
+    },
+    minimum_purchase_price: {
+      value: 4000,
+      message: 'Sorry! The price of the car is too low'
+    }
+  }
+};
+
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -42,43 +76,36 @@ export default function handler(
     };
 
     try {
-      if (driverAge) {
-        if (parseInt(driverAge) > 18) {
-          if (car) {
-            if (car === 'porsche' && parseInt(driverAge) > 24) {
-              if (purchasePrice) {
-                if (parseInt(purchasePrice) > 5000) {
-                  result = {
-                    ...result,
-                    approve: true
-                  };
-                } else {
-                  result.error.purchasePrice = 'Sorry! The price of the car is too low';
-                }
-              } else {
-                result.error.purchasePrice = 'Purchase price must be provided';
-              }
-            } else {
-              result = {
-                ...result,
-                error: {
-                  ...result.error,
-                  driverAge: 'Sorry! We can not accept this particular risk',
-                  car: 'Sorry! We can not accept this particular risk'
-                }
-              }
-            }
-          } else {
-            result.error.car = 'Car must be provided';
-          }
-        } else {
-          result.error.driverAge = 'Sorry! The driver is too young';
-        }
-      } else {
-        result.error.driverAge = 'Age of driver must be provided';
+      if (!driverAge) {
+        result.error.driverAge = appraisal_rules.driver.is_empty.message;
+      } else if (
+        parseInt(driverAge) < appraisal_rules.driver.minimum_age.value
+      ) {
+        result.error.driverAge = appraisal_rules.driver.minimum_age.message;
       }
 
-      if (result.approve) {
+      if (!purchasePrice) {
+        result.error.purchasePrice = appraisal_rules.purchase_price.is_empty.message;
+      } else if (
+        parseInt(purchasePrice) < appraisal_rules.purchase_price.minimum_purchase_price.value
+      ) {
+        result.error.purchasePrice = appraisal_rules.purchase_price.minimum_purchase_price.message;
+      }
+
+      if (!car) {
+        result.error.car = appraisal_rules.car.is_empty.message;
+      } else if (
+        car === 'porsche' &&
+        parseInt(driverAge) < appraisal_rules.car.model.porsche.minimum_driver_age.value
+      ) {
+        result.error.car = appraisal_rules.car.model.porsche.minimum_driver_age.message
+        result.error.driverAge = appraisal_rules.car.model.porsche.minimum_driver_age.message
+        result.error.global = appraisal_rules.car.model.porsche.minimum_driver_age.message
+      }
+
+      const hasErrors = Object.values(result.error).some(val => (val !== null && val !== ''));
+
+      if (!hasErrors) {
         result = {
           ...result,
           redirect: '/appraisal/offer'
