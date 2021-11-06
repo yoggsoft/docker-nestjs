@@ -31,7 +31,7 @@ export default function Header () {
 		<AppBar position='static' className={classes.appbar} elevation={0}>
 			<Container maxWidth='md' className={classes.container}>
 				<Link href='/' passHref>
-					<ButtonBase>
+					<ButtonBase disableRipple>
 						<ChevronLeft fontSize='small' />
 						<Typography variant='h6' component='div' className={classes.typography}>
 								QOVER.ME

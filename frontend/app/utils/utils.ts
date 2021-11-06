@@ -10,10 +10,11 @@ export function isValidAge (value: string) {
 	return (isNumber(value) && value.length < 3);
 }
 
-export function sanitizeCurrency(value: number) {
+export function sanitizeCurrency(value: number, options?: {}) {
 	numbro.setLanguage('fr-BE');
 	return numbro(value).format({
 		mantissa: 2,
-		thousandSeparated: true
+		thousandSeparated: true,
+		...options
 	});
 }

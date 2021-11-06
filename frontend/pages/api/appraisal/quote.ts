@@ -45,7 +45,7 @@ const appraisal_rules = {
       error_message: 'Purchase price must be provided'
     },
     minimum_purchase_price: {
-      value: 4000,
+      value: 5000,
       error_message: 'Sorry! The price of the car is too low'
     }
   }

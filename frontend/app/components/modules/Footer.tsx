@@ -37,7 +37,7 @@ export default function Footer () {
 		>
 			<Container maxWidth='sm' className={classes.container}>
 				<Link href='/' passHref>
-						<ButtonBase>
+						<ButtonBase disableRipple>
 							<Typography variant='h6' component='div' className={classes.typography}>
 							{'© Qover 2021'} 
 							</Typography>

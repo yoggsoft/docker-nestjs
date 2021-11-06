@@ -224,6 +224,7 @@ export default function SigninForm () {
         </Link>
       </FormGroup>
       <Button
+        disableRipple
         disabled={state.loading}
         variant='contained'
         className={classes.cta}

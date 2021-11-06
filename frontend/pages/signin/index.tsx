@@ -25,17 +25,6 @@ const useStyles = makeStyles({
 		color: '#fff',
 		fontSize: 14
 	},
-	welcome: {
-		height: 28,
-		fontSize: 18,
-		fontWeight: 'normal',
-		fontStretch: 'normal',
-		fontStyle: 'normal',
-		lineHeight: 1.56,
-		letterSpacing: 'normal',
-		textAlign: 'center',
-		color: '#5b7289'
-	},
 	link: {
 		fontWeight: 600,
 		color: 'white',
@@ -57,7 +46,7 @@ const useStyles = makeStyles({
 const SigninPage: NextPage = () => {
 	const classes = useStyles();
 	return (
-		<HeaderFooterLayout>
+		<HeaderFooterLayout showFooter showHeader>
 			<Grid container justifyContent='center' alignContent='center' sx={{ display: 'flex' }}>
 				<Grid item sm={6} justifyContent='center' className={classes.content}>
 					<Grid item className={classes.logoContainer}>

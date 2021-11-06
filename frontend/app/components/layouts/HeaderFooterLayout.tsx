@@ -5,18 +5,39 @@ import Head from 'next/head'
 import Header from '../modules/Header';
 import Footer from '../modules/Footer';
 import Container from '@mui/material/Container';
+import { ClassNameMap, makeStyles } from '@mui/styles';
+import classNames from 'classnames';
+
+const useStyles = makeStyles({
+	root: {
+		minHeight: '100vh',
+		display: 'flex',
+		flexDirection: 'column',
+		backgroundColor: 'rgba(72, 72, 72, 0.05)',
+		backgroundImage: 'linear-gradient(122deg, #317bda -6%, #33c3c8)'
+	}
+});
 
 export interface IHeaderFooterLayout {
 	children?: ReactNode | null,
-	hideFooter?: boolean,
-	hideHeader?: boolean
+	showFooter?: boolean,
+	showHeader?: boolean,
+	bgColor?:string | undefined,
+	bgImage?: string | undefined
+	backgroundProps?: {}
 }
 
 const qoverTheme = createTheme();
 
-const HeaderFooterLayout = ({ children, hideFooter, hideHeader }: IHeaderFooterLayout) => {
+const HeaderFooterLayout = ({
+	children,
+	showFooter,
+	showHeader,
+	backgroundProps
+}: IHeaderFooterLayout) => {
+	const classes = useStyles();
 	useEffect(() => {
-    const jssStyles = document.querySelector('#jss-server-side');
+		const jssStyles = document.querySelector('#jss-server-side');
     jssStyles?.parentElement?.removeChild(jssStyles);
   }, []);
 	return (
@@ -25,25 +46,22 @@ const HeaderFooterLayout = ({ children, hideFooter, hideHeader }: IHeaderFooterL
 				<CssBaseline />
 				<Head>
 					<title>Qover Test</title>
-					<link rel="icon" href="/favicon.png" />
+					<link rel='icon' href='/favicon.png' />
 				</Head>
-				{!hideHeader && <Header />}
+				<div
+					className={classes.root}
+					{...backgroundProps}
+				>
+				{showHeader && <Header />}
 				<Container
 					sx={{ flex: 1, height: '100vh', display: 'flex' }}
 					maxWidth={false}
 					component='main'
-				>
+					>
 				{children}
 				</Container>
-				{!hideFooter && <Footer />}
-				<style jsx global>{`
-        #__next {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          background-image: linear-gradient(122deg, #317bda -6%, #33c3c8);
-        }
-      `}</style>	
+				{showFooter && <Footer />}
+				</div>
 			</ThemeProvider>
 		</>
 	);

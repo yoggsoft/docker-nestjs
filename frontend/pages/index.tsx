@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 const HomePage: NextPage = () => {
 	const classes = useStyles();
 	return (
-		<HeaderFooterLayout>
+		<HeaderFooterLayout showHeader showFooter>
 			<Grid container justifyContent='center' alignContent='center' sx={{ display: 'flex' }}>
 				<Grid item sm={6} justifyContent='center' className={classes.content}>
 					<Grid item className={classes.logoContainer}>
@@ -54,7 +54,8 @@ const HomePage: NextPage = () => {
             <Typography className={classes.greeting}>Welcome at Qover</Typography>
             <Link href='/signin' passHref>
               <Button
-              fullWidth
+								disableRipple
+								fullWidth
                 variant='contained'
                 className={classes.cta}
               >

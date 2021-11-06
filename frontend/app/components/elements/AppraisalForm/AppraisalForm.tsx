@@ -203,6 +203,7 @@ export default function AppraisalForm () {
           </Grid>
           <Grid item xs={8}>
             <Button
+              disableRipple
               disabled={state.loading}
               variant='contained'
               className={classes.cta}
