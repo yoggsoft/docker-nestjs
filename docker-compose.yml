@@ -19,14 +19,14 @@ services:
     depends_on:
       - mongodb
 
-#   frontend:
-#     build:
-#       context: ./
-#       dockerfile: ./frontend/Dockerfile
-#     command: npm run dev
-#     tty: true
-#     ports:
-#       - "3600:3000"
+  frontend:
+    build:
+      context: ./
+      dockerfile: ./frontend/Dockerfile
+    command: npm run dev
+    tty: true
+    ports:
+      - "3600:3000"
 
 # version: "3"
 # services:

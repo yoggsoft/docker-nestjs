@@ -2,9 +2,10 @@ import type { NextPage } from 'next';
 import HeaderFooterLayout from '../../app/components/layouts/HeaderFooterLayout';
 import {
 	Grid,
-	Paper,
-	Link
+	Paper
 } from '@mui/material';
+import MuiLink from '@mui/material/Link';
+import Link from 'next/link';
 import Image from 'next/image';
 import { makeStyles } from '@mui/styles';
 import SigninForm from '../../app/components/elements/SigninForm/SigninForm';
@@ -41,7 +42,7 @@ const useStyles = makeStyles({
 	content: {
 		maxWidth: 350
 	}
-})
+});
 
 const SigninPage: NextPage = () => {
 	const classes = useStyles();
@@ -56,7 +57,13 @@ const SigninPage: NextPage = () => {
 						<SigninForm />
 					</Paper>
 					<Grid item className={classes.access}>
-						{`Don't have an account?`} &nbsp; <Link href='/' className={classes.link}>Ask access</Link>
+						{`Don't have an account?`}
+						&nbsp;
+						<Link href='/' passHref> 
+							<MuiLink className={classes.link}>
+								Ask access
+							</MuiLink>
+						</Link>
 					</Grid>
 				</Grid>
 			</Grid>

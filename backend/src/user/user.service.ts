@@ -8,12 +8,12 @@ import { UserDocument, User } from 'src/schemas/user.schema';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>
+    // @InjectModel(User.name) private userModel: Model<UserDocument>
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    return new this.userModel(createUserDto).save();
-  }
+  // async create(createUserDto: CreateUserDto): Promise<User> {
+    // return new this.userModel(createUserDto).save();
+  // }
 
   findAll() {
     return `This action returns all user`;
