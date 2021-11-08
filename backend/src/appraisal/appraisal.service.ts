@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAppraisalDto } from './dto/create-appraisal.dto';
-import { UpdateAppraisalDto } from './dto/update-appraisal.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Appraisal } from './entities/appraisal.entity';
 
 @Injectable()
 export class AppraisalService {
-  create(createAppraisalDto: CreateAppraisalDto) {
-    return 'This action adds a new appraisal';
+  constructor(
+    @InjectRepository(Appraisal) private appraisalRepository: Repository<Appraisal>
+  ) {}
+
+  findAll(): Promise<Appraisal[]> {
+    return this.appraisalRepository.find();
   }
 
-  findAll() {
-    return `This action returns all appraisal`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} appraisal`;
-  }
-
-  update(id: number, updateAppraisalDto: UpdateAppraisalDto) {
-    return `This action updates a #${id} appraisal`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} appraisal`;
+  create(
+    userId: number,
+    driverAge: string,
+    car: string,
+    purchasePrice: string
+  ): Promise<Appraisal> {
+    const newAppraisal = this.appraisalRepository.create({ userId, driverAge, car, purchasePrice });
+    return this.appraisalRepository.save(newAppraisal);
   }
 }
