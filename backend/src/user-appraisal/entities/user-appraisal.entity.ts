@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Appraisal {
+export class UserAppraisal {
 	@PrimaryGeneratedColumn()
 	id: number;
 	
@@ -9,14 +9,5 @@ export class Appraisal {
 	userId: number;
 
 	@Column()
-	driverAge: string;
-
-	@Column()
-	purchasePrice: string;
-
-	@Column()
-	car: string;
-
-	@Column()
-	plan: string
+	appraisalId: number;
 }
