@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AppraisalModule } from './appraisal/appraisal.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAppraisalModule } from './user-appraisal/user-appraisal.module';
+import { AuthModule } from './auth/auth.module';
 import config from '../ormcofig';
 
 @Module({
@@ -12,9 +12,9 @@ import config from '../ormcofig';
     TypeOrmModule.forRoot(config),
     AppraisalModule,
     UserModule,
-    UserAppraisalModule
+    UserAppraisalModule,
+    AuthModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController]
 })
 export class AppModule {}
