@@ -1,40 +1,16 @@
-## Description
+## Getting Started
 
-[Nest](https://github.com/nestjs/nest).
-
-## Installation
+Install npm and run start:dev
 
 ```bash
-$ npm install
+npm install
+npm up start:dev
 ```
 
-## Running the app
+Build docker container
 ```bash
-# development
-$ docker compose up backend
+// docker compose build backend
+// docker compose up backend
 ```
 
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
+Open [http://localhost:3500](http://localhost:3500) with your browser to see the result.

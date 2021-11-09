@@ -5,15 +5,16 @@ export function isNumber (value: string) {
 	return (value === '' || reg.test(value));
 }
 
-
 export function isValidAge (value: string) {
 	return (isNumber(value) && value.length < 3);
 }
 
 export function sanitizeCurrency(value: number, options?: {}) {
-	numbro.setLanguage('fr-BE');
-	return numbro(value).format({
+	return numbro(value).formatCurrency({
 		mantissa: 2,
+		currencySymbol: '€',
+		currencyPosition: 'postfix',
+		spaceSeparated: true,
 		thousandSeparated: true,
 		...options
 	});

@@ -114,7 +114,6 @@ export default function handler(
       }
       res.status(200).json({ ...result });
     } catch (err) {
-      console.log('CATCH', err);
       res.status(401).send({ ...result })
     }
   } else {

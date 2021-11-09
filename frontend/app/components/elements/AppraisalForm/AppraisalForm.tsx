@@ -61,7 +61,7 @@ function appraisalReducer (state: any, action: any) {
         ...state,
         loading: false,
         error: {
-          ...state.error
+          ...action.payload.error
         }
       };
     default:
@@ -112,7 +112,6 @@ export default function AppraisalForm () {
         res => {
           if (res.data.valid) {
             dispatch({ type: 'SUCCESS', payload: res.data });
-            console.log(res.data.redirect);
             router.push(res.data.redirect);
           } else {
             dispatch({ type: 'ERROR', payload: res.data });

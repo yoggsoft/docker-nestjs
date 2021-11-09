@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 		textAlign: 'center'
 	},
 	priceCard: {
-		width: 323,
+		width: 350,
 		margin: '0 15px 30px 0',
 		borderRadius: 3,
 		boxShadow: '0 2px 4px 0 rgba(72, 72, 72, 0.5)',
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 	},
 	priceTag: {
 		height: 44,
-		margin: '0 45px 2px 28px',
+		margin: '2px auto',
 		fontSize: 38,
 		fontWeight: 'bold',
 		fontStretch: 'normal',
@@ -125,17 +125,11 @@ export default function PlanCard ({
 			</div>
 			<Divider />
 			<div className={classnames(classes.row, classes.priceTagRow)}>
-				<div>
-					<Typography className={classes.priceTag} align='center'>
-						<strong>
-							{
-								(plan.cost?.monthly)
-									? sanitizeCurrency(plan.cost[duration])
-									: <LoopIcon className={classes.loader} />
-							}
-						</strong>
-					</Typography>
-				</div>
+				<Typography className={classes.priceTag} align='center' noWrap>
+					<strong>
+						{sanitizeCurrency(plan.cost[duration])}
+					</strong>
+				</Typography>
 				<Typography className={classes.priceTagDescription}>
 					{duration} incl. taxes
 				</Typography>

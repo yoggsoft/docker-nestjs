@@ -24,6 +24,9 @@ const useStyles = makeStyles({
 		color: 'white'
 	},
 	switchContainer: {
+		display: 'flex',
+		justifyContent: 'center',
+		textAlign: 'center',
 		margin: '40px auto'
 	},
 	comparisonContainer: {
@@ -46,108 +49,27 @@ const useStyles = makeStyles({
 	}
 });
 
-// TODO calculate on backend
-const plan_info = {
-	global: {
-		label: 'Global',
-		cost: {
-			monthly: 0,
-			yearly: 0
-		},
-		max_duration_travel: 90,
-		max_medical_expense_reimbursement: 1000000,
-		max_personal_assistance_abroad: 5000,
-		max_travel_assistance_abroad: 1000,
-		coverage_duration: 1
-	},
-	universe: {
-		label: 'Universe',
-		cost: {
-			monthly: 0,
-			yearly: 0
-		},
-		max_duration_travel: 180,
-		max_medical_expense_reimbursement: 3000000,
-		max_personal_assistance_abroad: 10000,
-		max_travel_assistance_abroad: 2500,
-		coverage_duration: 1
-	}
-};
-
-const yearlyPriceByCar: {[key: string]: number} = {
-	'audi': 250,
-	'bwm': 150,
-	'porsche': 500
-};
-
-const yearlyUniversePercentagePriceByCar: {[key: string]: number} = {
-	'audi': 0.03,
-	'bwm': 0.04,
-	'porsche': 0.07
-};
-
 const plan_duration_options: Array<string> = [
 	'monthly',
 	'yearly'
 ];
 
-const calculatePlanPrices = (params: {[key: string]: string}) => {
-	const {
-		car,
-		purchasePrice
-	} = params;
-	let globalCost: {'monthly': number, 'yearly': number} = { monthly: 0, yearly: 0 };
-	let universeCost: {'monthly': number, 'yearly': number} = { monthly: 0, yearly: 0 };
-	const globalYearly = yearlyPriceByCar[car];
-	const universeYearly = globalYearly + (parseInt(purchasePrice) * yearlyUniversePercentagePriceByCar[car])
-
-	globalCost = {
-		monthly: globalYearly / 12,
-		yearly: globalYearly
-	};
-
-	universeCost = {
-		monthly: universeYearly / 12,
-		yearly: universeYearly
-	};
-
-	return {
-		globalCost,
-		universeCost
-	};
-}
-
-const Offer: NextPage = ({ car, purchasePrice }: any) => {
-	const [planInfo, setPlanInfo] = useState(plan_info);
-	const [priceParams, setPriceParams] = useState({});
-	const [showYearly, setShowYearly] = useState(true);
-	const [activePlanDurationOption, setActivePlanDurationOption] = useState(plan_duration_options[1])
-	const [selectedPlanOption, setSelectedPlanOption] = useState('')
+const Offer: NextPage = ({ planInfo }: any) => {
 	const classes = useStyles();
+
+	// Toggles billing frequency
+	const [showYearly, setShowYearly] = useState(true);
+	const handleSwitch = () => setShowYearly(!showYearly);
+
+	// Toggles payment billing
+	const [activePlanDurationOption, setActivePlanDurationOption] = useState(plan_duration_options[1])
+	const handlePlanDurationChange = () => setActivePlanDurationOption(plan_duration_options[showYearly ? 1: 0 ]);
 	useEffect (() => {
 		handlePlanDurationChange()
 	}, [showYearly]);
-	useEffect(() => {
-		if (car && purchasePrice) {
-			setPriceParams({ car, purchasePrice });
-			const costs = calculatePlanPrices(priceParams);
-			setPlanInfo({
-					...planInfo,
-					global: {
-						...planInfo.global,
-						cost: costs.globalCost
-					},
-					universe: {
-						...planInfo.universe,
-						cost: costs.universeCost
-					}
-				}
-			);
-		}
-	}, []);
 
-	const handleSwitch = () => setShowYearly(!showYearly);
-	const handlePlanDurationChange = () => setActivePlanDurationOption(plan_duration_options[showYearly ? 1: 0 ]);
+	// Toggles between Selecting Global and Universe plans
+	const [selectedPlanOption, setSelectedPlanOption] = useState('')
 	const handleSelectedDuration = (planOption: string) => setSelectedPlanOption(planOption);
 
 	return (
@@ -165,7 +87,7 @@ const Offer: NextPage = ({ car, purchasePrice }: any) => {
 				<Grid item>
 					<Typography className={classes.title} variant='h2'>Select a plan</Typography>
 				</Grid>
-				<Grid item textAlign='center' justifyContent='center'  sx={{ display: 'flex' }} className={classes.switchContainer}>
+				<Grid item className={classes.switchContainer}>
 					<Stack direction='row' spacing={1} alignItems='center'>
 						<Typography color='white'>PAY MONTHLY</Typography>
 						<CustomSwitch checked={showYearly} onClick={handleSwitch} />
@@ -202,11 +124,59 @@ const Offer: NextPage = ({ car, purchasePrice }: any) => {
 }
 
 Offer.getInitialProps = (context) => {
-	console.log(context);
-  return { 
-    car: context.query.car,
-    purchasePrice: context.query.purchasePrice
-  };
+	const {
+		purchasePrice,
+		car 
+	} = context.query;
+
+	const yearlyPriceByCar: {[key: string]: number} = {
+		'audi': 250,
+		'bwm': 150,
+		'porsche': 500
+	};
+	
+	const yearlyUniversePercentagePriceByCar: {[key: string]: number} = {
+		'audi': 0.03,
+		'bwm': 0.04,
+		'porsche': 0.07
+	};
+
+	const numberPurchasePrice = parseInt(purchasePrice as string);
+
+	const global_cost_yearly = yearlyPriceByCar[car as string];
+	const global_cost_monthly = global_cost_yearly / 12;
+
+	const universe_cost_yearly = global_cost_yearly + (numberPurchasePrice * yearlyUniversePercentagePriceByCar[car as string])
+	const universe_cost_monthly = universe_cost_yearly / 12;
+
+  return {
+		planInfo: {
+			global: {
+				label: 'Global',
+				cost: {
+					monthly: global_cost_monthly,
+					yearly: global_cost_yearly
+				},
+				max_duration_travel: 90,
+				max_medical_expense_reimbursement: 1000000,
+				max_personal_assistance_abroad: 5000,
+				max_travel_assistance_abroad: 1000,
+				coverage_duration: 1
+			},
+			universe: {
+				label: 'Universe',
+				cost: {
+					monthly: universe_cost_monthly,
+					yearly: universe_cost_yearly
+				},
+				max_duration_travel: 180,
+				max_medical_expense_reimbursement: 3000000,
+				max_personal_assistance_abroad: 10000,
+				max_travel_assistance_abroad: 2500,
+				coverage_duration: 1
+			}
+		}
+	};
 };
 
 export default Offer
