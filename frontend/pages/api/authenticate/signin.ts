@@ -1,5 +1,4 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
   valid: boolean,
@@ -31,7 +30,7 @@ const signin_rules = {
     incorrect: {
       error_message: 'Invalid password'
     }
-  },
+  }
 }
 
 export default function handler(

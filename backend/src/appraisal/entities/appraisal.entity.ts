@@ -17,6 +17,6 @@ export class Appraisal {
 	@Column()
 	car: string;
 
-	@Column()
-	plan: string
+	@Column({ nullable: true })
+	plan?: string
 }

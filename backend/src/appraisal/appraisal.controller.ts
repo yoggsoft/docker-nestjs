@@ -1,4 +1,5 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AppraisalService } from './appraisal.service';
 import { Appraisal } from './entities/appraisal.entity';
 
@@ -11,9 +12,9 @@ export class AppraisalController {
     return this.appraisalService.findAll();
   }
 
-  @Get()
-  create (params: Appraisal) {
-    console.log('HOLA');
+  @UseGuards(JwtAuthGuard)
+  @Post('create')
+  create(@Body() params: Appraisal) {
     try {
       const {
         userId,
@@ -25,5 +26,12 @@ export class AppraisalController {
     } catch (error) {
       throw error;
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('users/:id')
+  findAllByUser(@Body() userid: number) {
+    console.log({ userid });
+    return this.appraisalService.findAllByUserId(userid);
   }
 }

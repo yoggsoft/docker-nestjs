@@ -5,11 +5,20 @@ import {
 	Divider,
 	Button
 } from '@mui/material';
+import LoopIcon from '@mui/icons-material/Loop';
 import { sanitizeCurrency } from '../../../utils/utils';
 import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const useStyles = makeStyles({
+	loader: {
+		animation: '$spin 1s linear infinite',
+	},
+	'@keyframes spin': {
+		to: {
+			'-webkit-transform': 'rotate(360deg)'
+		}
+	},
 	cardTitle: {
 		fontSize: 18,
 		padding: 15,
@@ -119,7 +128,11 @@ export default function PlanCard ({
 				<div>
 					<Typography className={classes.priceTag} align='center'>
 						<strong>
-							{sanitizeCurrency(plan.cost.monthly)}
+							{
+								(plan.cost?.monthly)
+									? sanitizeCurrency(plan.cost[duration])
+									: <LoopIcon className={classes.loader} />
+							}
 						</strong>
 					</Typography>
 				</div>

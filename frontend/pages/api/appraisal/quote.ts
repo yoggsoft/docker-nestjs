@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
   approve: boolean,
@@ -104,17 +104,17 @@ export default function handler(
         result.error.global = appraisal_rules.car.model.porsche.minimum_driver_age.error_message
       }
 
-      const hasErrors = Object.values(result.error).some(val => (val !== null && val !== ''));
-
+      const hasErrors = Object.values(result.error).some(val => (val !== null && val !== ''));      
       if (!hasErrors) {
         result = {
           ...result,
           valid: true,
-          redirect: '/appraisal/offer'
+          redirect: `/appraisal/offer?purchasePrice=${purchasePrice}&car=${car}`
         };
       }
       res.status(200).json({ ...result });
     } catch (err) {
+      console.log('CATCH', err);
       res.status(401).send({ ...result })
     }
   } else {

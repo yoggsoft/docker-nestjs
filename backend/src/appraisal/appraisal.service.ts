@@ -22,4 +22,8 @@ export class AppraisalService {
     const newAppraisal = this.appraisalRepository.create({ userId, driverAge, car, purchasePrice });
     return this.appraisalRepository.save(newAppraisal);
   }
+
+  async findAllByUserId(userId: number): Promise<Appraisal[]> {
+    return this.appraisalRepository.find({ where: { userId: userId } })
+  }
 }

@@ -1,34 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { UserAppraisalService } from './user-appraisal.service';
-import { CreateUserAppraisalDto } from './dto/create-user-appraisal.dto';
-import { UpdateUserAppraisalDto } from './dto/update-user-appraisal.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user-appraisal')
 export class UserAppraisalController {
   constructor(private readonly userAppraisalService: UserAppraisalService) {}
 
-  @Post()
-  create(@Body() createUserAppraisalDto: CreateUserAppraisalDto) {
-    return this.userAppraisalService.create(createUserAppraisalDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.userAppraisalService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userAppraisalService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserAppraisalDto: UpdateUserAppraisalDto) {
-    return this.userAppraisalService.update(+id, updateUserAppraisalDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userAppraisalService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @Post('create')
+  create(@Body() params) {
+    try {
+      const {
+        userId,
+        appraisalId
+      } = params;
+      return this.userAppraisalService.create(userId, appraisalId);
+    } catch (error) {
+      throw error;
+    }
   }
 }

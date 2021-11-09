@@ -6,6 +6,7 @@ import {
   MenuItem,
   Grid
 } from '@mui/material';
+import { useRouter } from 'next/router'
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { makeStyles } from "@mui/styles";
 import AppraisalTextfield from './AppraisalTextField';
@@ -60,8 +61,7 @@ function appraisalReducer (state: any, action: any) {
         ...state,
         loading: false,
         error: {
-          ...state.error,
-          ...action.payload.error
+          ...state.error
         }
       };
     default:
@@ -86,6 +86,7 @@ const vehicles = [
 
 export default function AppraisalForm () {
   const classes = useStyles();
+  const router = useRouter();
   const [state, dispatch] = useReducer(appraisalReducer, {
     loading: false,
     appraisal: {
@@ -111,7 +112,8 @@ export default function AppraisalForm () {
         res => {
           if (res.data.valid) {
             dispatch({ type: 'SUCCESS', payload: res.data });
-            window.location.href = res.data.redirect;
+            console.log(res.data.redirect);
+            router.push(res.data.redirect);
           } else {
             dispatch({ type: 'ERROR', payload: res.data });
           }
