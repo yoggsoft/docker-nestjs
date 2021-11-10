@@ -1,41 +1,35 @@
-# Install dependencies only when needed
-FROM node:alpine AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-COPY .package.json ./app
-RUN npm install
+# # WIP
+# # Install dependencies only when needed
+# FROM node:alpine AS deps
+# RUN apk add --no-cache libc6-compat
+# WORKDIR /app
+# COPY /frontend/package*.json ./
+# RUN npm install
 
-# Rebuild the source code only when needed
-FROM node:alpine AS builder
-WORKDIR /app
-COPY ./frontend ./app
-COPY --from=deps /app/node_modules ./node_modules
-# RUN yarn build && yarn install --production --ignore-scripts --prefer-offline
+# # Rebuild the source code only when needed
+# FROM node:alpine AS builder
+# WORKDIR /app
+# COPY /frontend ./
+# COPY --from=deps /node_modules ./node_modules
 
-# Production image, copy all the files and run next
-FROM node:alpine AS runner
-WORKDIR /app
+# # Production image, copy all the files and run next
+# FROM node:alpine AS runner
+# WORKDIR /app
 
-ENV NODE_ENV production
+# ENV NODE_ENV production
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+# RUN addgroup -g 1001 -S nodejs
+# RUN adduser -S nextjs -u 1001
 
-# You only need to copy next.config.js if you are NOT using the default configuration
-COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# # You only need to copy next.config.js if you are NOT using the default configuration
+# COPY --from=builder /next.config.js ./
+# COPY --from=builder /public ./public
+# COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+# COPY --from=builder /node_modules ./node_modules
+# COPY --from=builder /package.json ./package.json
 
-USER nextjs
+# USER nextjs
 
-EXPOSE 3000
+# EXPOSE 3000
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry.
-# ENV NEXT_TELEMETRY_DISABLED 1
-
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "dev"]
